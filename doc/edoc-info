@@ -1,4 +1,0 @@
-%% encoding: UTF-8
-{application,metrics_exporter}.
-{modules,[counter_histogram,exporter_format,exporter_helper,exporter_server,
-          metrics_exporter_app,metrics_exporter_sup,prometheus_format]}.
