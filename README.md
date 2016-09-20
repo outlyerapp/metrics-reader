@@ -55,9 +55,9 @@ high and low values as the accumulator clears previous registers.
 
     {format, prometheus_format}                         # defaults to prometheus exposition format
     {histogram_acc_interval_sec, 10}                    # defaults to 1 second
-    {histogram_slide_interval_sec, 60}                  # defaults to 1 second
+    {histogram_slide_interval_sec, 60}                  # defaults to 60 second
 
-## Exportformats
+## Export formats
 
 An `export_format` behaviour is defined that consists of the following callbacks:
 
