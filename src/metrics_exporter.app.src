@@ -3,16 +3,10 @@
   {vsn, "0.1.0"},
   {registered, []},
   {mod, { metrics_exporter_app, []}},
-  {applications,
-   [kernel,
-    stdlib,
-    lager,
-    folsom
-   ]},
+  {applications, [kernel, stdlib, lager, folsom ]},
   {env,[]},
   {modules, []},
-
-  {maintainers, []},
-  {licenses, []},
-  {links, []}
+  {maintainers, ["Dataloop.io"]},
+  {licenses, ["MIT"]},
+  {links,[{"Github","https://github.com/dataloop/metrics-exporter"}]}
  ]}.

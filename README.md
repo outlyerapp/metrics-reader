@@ -18,6 +18,8 @@ nodetool:
 ./bin/metrics_exporter metrics
 ```
 
+[![Hex pm](http://img.shields.io/hexpm/v/metrics_exporter.svg?style=flat)](https://hex.pm/packages/metrics_exporter)
+
 ## The exporter server
 
 Metrics should be registered with the exporter server if they are to be
