@@ -30,13 +30,17 @@
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
--spec register(term()) -> ok.
+-spec register(list()) -> ok.
+register(Names) when is_list(Names) ->
+    gen_server:call(?SERVER, {register, Names});
 register(Name) ->
-    gen_server:call(?SERVER, {register, Name}).
+    register([Name]).
 
--spec deregister(term()) -> ok.
+-spec deregister(list()) -> ok.
+deregister(Names) when is_list(Names) ->
+    gen_server:call(?SERVER, {deregister, Names});
 deregister(Name) ->
-    gen_server:call(?SERVER, {deregister, Name}).
+    deregister([Name]).
 
 -spec metrics() -> any().
 metrics() ->
@@ -58,12 +62,12 @@ init([]) ->
                 node_prefix = list_to_binary(atom_to_list(node()))}}.
 
 -spec handle_call(any(), any(), state()) -> {reply, term(), state()}.
-handle_call({register, Name}, _From, State = #state{registry = Registry}) ->
-    Registry1 = sets:add_element(Name, Registry),
+handle_call({register, Names}, _From, State = #state{registry = Registry}) ->
+    Registry1 = lists:foldl(fun sets:add_element/2, Registry, Names),
     {reply, ok, State#state{registry = Registry1}};
 
-handle_call({deregister, Name}, _From, State = #state{registry = Registry}) ->
-    Registry1 = sets:del_element(Name, Registry),
+handle_call({deregister, Names}, _From, State = #state{registry = Registry}) ->
+    Registry1 = lists:foldl(fun sets:del_element/2, Registry, Names),
     {reply, ok, State#state{registry = Registry1}};
 
 handle_call(metrics, _From,
