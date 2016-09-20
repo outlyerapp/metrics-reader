@@ -1,0 +1,18 @@
+{application, metrics_exporter,
+ [{description, "Expose erlang application metrics in a standardised format"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, { metrics_exporter_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    lager,
+    folsom
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.
