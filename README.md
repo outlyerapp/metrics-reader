@@ -1,6 +1,8 @@
 metrics_exporter
 =====
 
+[![Hex pm](http://img.shields.io/hexpm/v/metrics_exporter.svg?style=flat)](https://hex.pm/packages/metrics_exporter)
+
 An application that exposes folsom metrics in common standardised formats.
 
 This is important for several reasons:
@@ -17,8 +19,6 @@ nodetool:
 ```
 ./bin/metrics_exporter metrics
 ```
-
-[![Hex pm](http://img.shields.io/hexpm/v/metrics_exporter.svg?style=flat)](https://hex.pm/packages/metrics_exporter)
 
 ## The exporter server
 
