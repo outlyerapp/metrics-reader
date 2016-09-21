@@ -40,7 +40,7 @@
 
 -spec histogram(Name :: [binary()], Histogram :: [any()]) -> binary().
 histogram(Name, Histogram) when is_list(Name) ->
-    MetricName = combine(Name, <<"_">>),
+    MetricName = combine(lists:flatten(Name), <<"_">>),
     Prologue = emit_prologue(<<"histogram">>, MetricName),
     Summary = emit_summary(Histogram, MetricName),
     <<Prologue/binary, Summary/binary>>.
@@ -83,7 +83,7 @@ emit_summary(Histogram, Name) ->
     emit_summary(Histogram, Name, <<>>).
 
 emit_summary([{min, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_min">>, V),
+    Series = emit_series(<<Name/binary, "_min">>, round(V)),
     emit_summary(T, Name, combine_lines(Acc, Series));
 emit_summary([{max, V} | T], Name, Acc) ->
     Series = emit_series(<<Name/binary, "_max">>, round(V)),
@@ -132,13 +132,15 @@ combine(Parts, Sep) ->
 
 combine([], _Sep, Acc) ->
     Acc;
-combine([H], _Sep, <<>>) ->
-    H;
-combine([H], Sep, Acc) ->
-    combine_two(Acc, H, Sep);
 combine([H | T], Sep, Acc) ->
     combine(T, Sep, combine_two(Acc, H, Sep)).
 
+combine_two(<<>>, <<>>, _Sep) ->
+    <<>>;
+combine_two(P1, <<>>, _Sep) ->
+    P1;
+combine_two(<<>>, P2, _Sep) ->
+    P2;
 combine_two(P1, P2, Sep)
   when is_binary(P1),
        is_binary(P2),
