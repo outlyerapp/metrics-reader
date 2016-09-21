@@ -1,7 +1,7 @@
--module(exporter_server).
+-module(metrics_reader_server).
 -behaviour(gen_server).
 
--include("metrics_exporter.hrl").
+-include("metrics_reader.hrl").
 
 %% API
 -export([start_link/0,
@@ -58,7 +58,7 @@ console_metrics([]) ->
 
 -spec init([]) -> {ok, state()}.
 init([]) ->
-    FormatMod = exporter_helper:opt(format, prometheus_format),
+    FormatMod = metrics_reader_helper:opt(format, prometheus_format),
     {ok, #state{format_module = FormatMod,
                 node_prefix = list_to_binary(atom_to_list(node()))}}.
 

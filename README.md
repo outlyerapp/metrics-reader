@@ -1,9 +1,9 @@
-metrics_exporter
+metrics_reader
 =====
 
-[![Hex pm](http://img.shields.io/hexpm/v/metrics_exporter.svg?style=flat)](https://hex.pm/packages/metrics_exporter)
+[![Hex pm](http://img.shields.io/hexpm/v/metrics_reader.svg?style=flat)](https://hex.pm/packages/metrics_reader)
 
-An application that exposes folsom metrics in common standardised formats.
+An application that exposes Folsom metrics in common standardised formats.
 
 This is important for several reasons:
  
@@ -13,27 +13,27 @@ This is important for several reasons:
 - Knowledge is transferable when the same problem is solved in a consistent
   manner.  
 
-The metrics exporter exposes the application metrics via an rpc call to the
+The metrics reader exposes the application metrics via an rpc call to the
 nodetool:
 
 ```
-./bin/metrics_exporter metrics
+./bin/metrics_reader metrics
 ```
 
-## The exporter server
+## The metrics reader server
 
-Metrics should be registered with the exporter server if they are to be
+Metrics should be registered with the metrics reader server if they are to be
 reported via the console:
 
-    exporter_server:register(subscriber_acks).
+    metrics_reader_server:register(subscriber_acks).
 
 It is also possible to de-register a registered metric:
 
-    exporter_server:deregister(subscriber_acks).
+    metrics_reader_server:deregister(subscriber_acks).
 
-Finally, in order to export registered metrics:
+Finally, in order to examine the registered metrics:
 
-    exporter_server:metricss().
+    metrics_reader_server:metrics().
 
 ## The counter histogram
 

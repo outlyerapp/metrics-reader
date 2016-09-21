@@ -5,7 +5,7 @@
 %%
 %% Example output:
 %% <pre>
-%%   # A histogram, which has a pretty complex representation in the text format:
+%%   # A histogram, which has a complex representation in the text format:
 %%   # HELP http_request_duration_seconds A histogram of the request duration.
 %%   # TYPE http_request_duration_seconds histogram
 %%   http_request_duration_seconds_bucket{le="0.05"} 24054
@@ -16,7 +16,7 @@
 %%   http_request_duration_seconds_bucket{le="+Inf"} 144320
 %%   http_request_duration_seconds_sum 53423
 %%   http_request_duration_seconds_count 144320
-%%   
+%%
 %%   # Finally a summary, which has a complex representation, too:
 %%   # HELP rpc_duration_seconds A summary of the RPC duration in seconds.
 %%   # TYPE rpc_duration_seconds summary
@@ -31,7 +31,7 @@
 %%
 %% @end
 -module(prometheus_format).
--behaviour(exporter_format).
+-behaviour(metrics_reader_format).
 
 %% -export([histogram/2]).
 -compile(export_all).

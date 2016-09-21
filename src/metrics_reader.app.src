@@ -1,0 +1,12 @@
+{application,metrics_reader,
+             [{description,"Expose Erlang application Folsom metrics to the console"},
+              {vsn,"0.1.0"},
+              {registered,[]},
+              {mod,{metrics_reader_app,[]}},
+              {applications,[kernel,stdlib,lager,folsom]},
+              {env,[]},
+              {modules,[]},
+              {maintainers,["Dataloop.io"]},
+              {licenses,["MIT"]},
+              {links,[{"Github",
+                       "https://github.com/dataloop/metrics-reader"}]}]}.

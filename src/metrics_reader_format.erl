@@ -1,8 +1,4 @@
-%% @doc
-%% Module that implements this behaviour can be used
-%% as `foramt' parameter for exporters.
-%% @end
--module(exporter_format).
+-module(metrics_reader_format).
 
 %%====================================================================
 %% Callbacks

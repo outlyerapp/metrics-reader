@@ -1,9 +1,9 @@
 %%%-------------------------------------------------------------------
-%% @doc metrics_exporter top level supervisor.
+%% @doc metrics_reader top level supervisor.
 %% @end
 %%%-------------------------------------------------------------------
 
--module(metrics_exporter_sup).
+-module(metrics_reader_sup).
 
 -behaviour(supervisor).
 
@@ -36,7 +36,7 @@ start_link() ->
                               [supervisor:child_spec()]}}.
 init([]) ->
     Children = [?CHILD(counter_histogram, worker, []),
-                ?CHILD(exporter_server, worker, [])],
+                ?CHILD(metrics_reader_server, worker, [])],
     {ok, {sup_flags(), Children}}.
 
 %%====================================================================

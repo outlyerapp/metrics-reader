@@ -9,7 +9,7 @@
 -module(counter_histogram).
 -behaviour(gen_server).
 
--include("metrics_exporter.hrl").
+-include("metrics_reader.hrl").
 
 %% API
 -export([start_link/0,
@@ -81,10 +81,10 @@ dec(Name, N) ->
 init([]) ->
     %% We want a high priority to ensure reporting accuracy
     process_flag(priority, high),
-    SlideInterval = exporter_helper:opt(histogram_slide_interval_sec, 60),
-    AccumulatorInterval = exporter_helper:opt(histogram_acc_interval_sec, 1),
-    {ok, #state{slide_interval = SlideInterval,
-                acc_interval = AccumulatorInterval * 1000}}.
+    SInterval = metrics_reader_helper:opt(histogram_slide_interval_sec, 60),
+    AInterval = metrics_reader_helper:opt(histogram_acc_interval_sec, 1),
+    {ok, #state{slide_interval = SInterval,
+                acc_interval = AInterval * 1000}}.
 
 -spec handle_call(any(), any(), state()) -> {reply, term(), state()}.
 handle_call(start, _From,
