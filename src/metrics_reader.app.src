@@ -1,6 +1,6 @@
 {application,metrics_reader,
              [{description,"Expose Erlang application Folsom metrics to the console"},
-              {vsn,"0.1.1"},
+              {vsn,"0.1.2"},
               {registered,[]},
               {mod,{metrics_reader_app,[]}},
               {applications,[kernel,stdlib,lager,folsom]},
