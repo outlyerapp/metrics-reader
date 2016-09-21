@@ -6,6 +6,7 @@
 %% API
 -export([start_link/0,
          register/1,
+         registered/0,
          deregister/1,
          metrics/0,
          console_metrics/1]).
@@ -36,6 +37,10 @@ register(Names) when is_list(Names) ->
 register(Name) ->
     register([Name]).
 
+-spec registered() -> list().
+registered() ->
+    gen_server:call(?SERVER, registered).
+
 -spec deregister(list()) -> ok.
 deregister(Names) when is_list(Names) ->
     gen_server:call(?SERVER, {deregister, Names});
@@ -50,7 +55,7 @@ metrics() ->
 -spec console_metrics([]) -> any().
 console_metrics([]) ->
     Metrics = gen_server:call(?SERVER, metrics),
-    io:format("~s", [binary_to_list(Metrics)]).
+    io:format("~s~n", [binary_to_list(Metrics)]).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -70,6 +75,10 @@ handle_call({register, Names}, _From, State = #state{registry = Registry}) ->
 handle_call({deregister, Names}, _From, State = #state{registry = Registry}) ->
     Registry1 = lists:foldl(fun sets:del_element/2, Registry, Names),
     {reply, ok, State#state{registry = Registry1}};
+
+handle_call(registered, _From, State = #state{registry = Registry}) ->
+    Reply = sets:to_list(Registry),
+    {reply, Reply, State};
 
 handle_call(metrics, _From,
             State = #state{format_module = FormatMod,
