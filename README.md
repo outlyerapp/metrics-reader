@@ -25,15 +25,15 @@ nodetool:
 Metrics should be registered with the metrics reader server if they are to be
 reported via the console:
 
-    metrics_reader_server:register(subscriber_acks).
+    metrics_reader:register(subscriber_acks).
 
 It is also possible to de-register a registered metric:
 
-    metrics_reader_server:deregister(subscriber_acks).
+    metrics_reader:deregister(subscriber_acks).
 
 Finally, in order to examine the registered metrics:
 
-    metrics_reader_server:metrics().
+    metrics_reader:metrics().
 
 ## The counter histogram
 

@@ -36,7 +36,7 @@ start_link() ->
                               [supervisor:child_spec()]}}.
 init([]) ->
     Children = [?CHILD(counter_histogram, worker, []),
-                ?CHILD(metrics_reader_server, worker, [])],
+                ?CHILD(metrics_reader, worker, [])],
     {ok, {sup_flags(), Children}}.
 
 %%====================================================================

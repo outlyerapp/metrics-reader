@@ -1,4 +1,4 @@
--module(metrics_reader_server).
+-module(metrics_reader).
 -behaviour(gen_server).
 
 -include("metrics_reader.hrl").
