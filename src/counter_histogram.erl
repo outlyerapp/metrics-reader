@@ -55,20 +55,20 @@ stop() ->
 new(Name) ->
     gen_server:call(?SERVER, {new, Name}).
 
--spec inc(term()) -> ok.
+-spec inc(term()) -> [integer()] | integer().
 inc(Name) ->
     inc(Name, 1).
 
--spec inc(term(), pos_integer) -> ok.
+-spec inc(term(), pos_integer()) -> [integer()] | integer().
 inc(Name, N) ->
     Internal = internal_name(Name),
     folsom_metrics_counter:inc(Internal, N).
 
--spec dec(term()) -> ok.
+-spec dec(term()) -> [integer()] | integer().
 dec(Name) ->
     dec(Name, 1).
 
--spec dec(term(), pos_integer) -> ok.
+-spec dec(term(), pos_integer()) -> [integer()] | integer().
 dec(Name, N) ->
     Internal = internal_name(Name),
     folsom_metrics_counter:dec(Internal, N).

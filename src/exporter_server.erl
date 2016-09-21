@@ -8,7 +8,7 @@
          register/1,
          deregister/1,
          metrics/0,
-         metrics/1]).
+         console_metrics/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -44,12 +44,13 @@ deregister(Name) ->
 
 -spec metrics() -> any().
 metrics() ->
-    metrics([]).
+    gen_server:call(?SERVER, metrics).
 
 %% The console passes in an empty args array, even if there are no args.
--spec metrics([]) -> any().
-metrics([]) ->
-    gen_server:call(?SERVER, metrics).
+-spec console_metrics([]) -> any().
+console_metrics([]) ->
+    Metrics = gen_server:call(?SERVER, metrics),
+    io:format("~s", [binary_to_list(Metrics)]).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -73,11 +74,12 @@ handle_call({deregister, Names}, _From, State = #state{registry = Registry}) ->
 handle_call(metrics, _From,
             State = #state{format_module = FormatMod,
                            node_prefix = Prefix, registry = Registry}) ->
-    Reply = [begin
+    Lines = [begin
                  Spec = folsom_metrics:get_metric_info(Id),
                  format_metric(FormatMod, Prefix, Spec)
              end || Id <- sets:to_list(Registry)],
-    {reply, Reply, State};
+    CombinedLines = lists:foldl(fun FormatMod:combine_lines/2, <<>>, Lines),
+    {reply, CombinedLines, State};
 
 handle_call(_Request, _From, State) ->
     Reply = ok,

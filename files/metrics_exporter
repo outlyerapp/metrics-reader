@@ -431,7 +431,7 @@ case "$1" in
 
         shift
 
-        relx_nodetool rpc exporter_server metrics
+        relx_nodetool rpc exporter_server console_metrics "$@"
         ;;
 
     *)
