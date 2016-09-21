@@ -59,7 +59,7 @@ code_change(OldVsn::any(), State::<a href="#type-state">state()</a>, Extra::any(
 ### dec/1 ###
 
 <pre><code>
-dec(Name::term()) -&gt; ok
+dec(Name::term()) -&gt; [integer()] | integer()
 </code></pre>
 <br />
 
@@ -68,7 +68,7 @@ dec(Name::term()) -&gt; ok
 ### dec/2 ###
 
 <pre><code>
-dec(Name::term(), N::pos_integer) -&gt; ok
+dec(Name::term(), N::pos_integer()) -&gt; [integer()] | integer()
 </code></pre>
 <br />
 
@@ -104,7 +104,7 @@ handle_info(Info::any(), State::<a href="#type-state">state()</a>) -&gt; {norepl
 ### inc/1 ###
 
 <pre><code>
-inc(Name::term()) -&gt; ok
+inc(Name::term()) -&gt; [integer()] | integer()
 </code></pre>
 <br />
 
@@ -113,7 +113,7 @@ inc(Name::term()) -&gt; ok
 ### inc/2 ###
 
 <pre><code>
-inc(Name::term(), N::pos_integer) -&gt; ok
+inc(Name::term(), N::pos_integer()) -&gt; [integer()] | integer()
 </code></pre>
 <br />
 

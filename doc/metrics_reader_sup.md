@@ -1,11 +1,11 @@
 
 
-# Module metrics_exporter_sup #
+# Module metrics_reader_sup #
 * [Description](#description)
 * [Function Index](#index)
 * [Function Details](#functions)
 
-metrics_exporter top level supervisor.
+metrics_reader top level supervisor.
 
 __Behaviours:__ [`supervisor`](supervisor.md).
 

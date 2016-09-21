@@ -1,6 +1,6 @@
 
 
-# Module exporter_server #
+# Module metrics_reader_server #
 * [Data Types](#types)
 * [Function Index](#index)
 * [Function Details](#functions)
@@ -26,7 +26,7 @@ state() = #state{}
 ## Function Index ##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#code_change-3">code_change/3</a></td><td></td></tr><tr><td valign="top"><a href="#deregister-1">deregister/1</a></td><td></td></tr><tr><td valign="top"><a href="#handle_call-3">handle_call/3</a></td><td></td></tr><tr><td valign="top"><a href="#handle_cast-2">handle_cast/2</a></td><td></td></tr><tr><td valign="top"><a href="#handle_info-2">handle_info/2</a></td><td></td></tr><tr><td valign="top"><a href="#init-1">init/1</a></td><td></td></tr><tr><td valign="top"><a href="#metrics-0">metrics/0</a></td><td></td></tr><tr><td valign="top"><a href="#metrics-1">metrics/1</a></td><td></td></tr><tr><td valign="top"><a href="#register-1">register/1</a></td><td></td></tr><tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td></td></tr><tr><td valign="top"><a href="#terminate-2">terminate/2</a></td><td></td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#code_change-3">code_change/3</a></td><td></td></tr><tr><td valign="top"><a href="#console_metrics-1">console_metrics/1</a></td><td></td></tr><tr><td valign="top"><a href="#deregister-1">deregister/1</a></td><td></td></tr><tr><td valign="top"><a href="#handle_call-3">handle_call/3</a></td><td></td></tr><tr><td valign="top"><a href="#handle_cast-2">handle_cast/2</a></td><td></td></tr><tr><td valign="top"><a href="#handle_info-2">handle_info/2</a></td><td></td></tr><tr><td valign="top"><a href="#init-1">init/1</a></td><td></td></tr><tr><td valign="top"><a href="#metrics-0">metrics/0</a></td><td></td></tr><tr><td valign="top"><a href="#register-1">register/1</a></td><td></td></tr><tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td></td></tr><tr><td valign="top"><a href="#terminate-2">terminate/2</a></td><td></td></tr></table>
 
 
 <a name="functions"></a>
@@ -39,6 +39,15 @@ state() = #state{}
 
 <pre><code>
 code_change(OldVsn::any(), State::<a href="#type-state">state()</a>, Extra::any()) -&gt; {ok, <a href="#type-state">state()</a>}
+</code></pre>
+<br />
+
+<a name="console_metrics-1"></a>
+
+### console_metrics/1 ###
+
+<pre><code>
+console_metrics(X1::[]) -&gt; any()
 </code></pre>
 <br />
 
@@ -93,15 +102,6 @@ init(X1::[]) -&gt; {ok, <a href="#type-state">state()</a>}
 
 <pre><code>
 metrics() -&gt; any()
-</code></pre>
-<br />
-
-<a name="metrics-1"></a>
-
-### metrics/1 ###
-
-<pre><code>
-metrics(X1::[]) -&gt; any()
 </code></pre>
 <br />
 

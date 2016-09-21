@@ -1,6 +1,6 @@
 
 
-# Module exporter_helper #
+# Module metrics_reader_helper #
 * [Function Index](#index)
 * [Function Details](#functions)
 

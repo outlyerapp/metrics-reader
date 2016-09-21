@@ -1,11 +1,11 @@
 
 
-# Module metrics_exporter_app #
+# Module metrics_reader_app #
 * [Description](#description)
 * [Function Index](#index)
 * [Function Details](#functions)
 
-metrics_exporter public API.
+metrics_reader public API.
 
 __Behaviours:__ [`application`](application.md).
 
