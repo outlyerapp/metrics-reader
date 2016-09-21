@@ -43,7 +43,7 @@ histogram(Name, Histogram) when is_list(Name) ->
     MetricName = combine(lists:flatten(Name), <<"_">>),
     Prologue = emit_prologue(<<"histogram">>, MetricName),
     Summary = emit_summary(Histogram, MetricName),
-    <<Prologue/binary, Summary/binary>>.
+    combine_lines(Prologue, Summary).
 
 -spec combine_lines(L1 :: binary(), L2 :: binary()) -> binary().
 combine_lines(L1, L2) when is_binary(L1), is_binary(L2) ->
