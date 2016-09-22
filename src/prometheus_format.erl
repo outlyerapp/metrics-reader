@@ -33,8 +33,7 @@
 -module(prometheus_format).
 -behaviour(metrics_reader_format).
 
-%% -export([histogram/2]).
--compile(export_all).
+-export([histogram/2, combine_lines/2]).
 
 -xref_ignore([histogram/2]).
 
@@ -47,16 +46,16 @@ histogram(Name, Histogram) when is_list(Name) ->
 
 -spec combine_lines(L1 :: binary(), L2 :: binary()) -> binary().
 combine_lines(L1, L2) when is_binary(L1), is_binary(L2) ->
-    combine_two(L1, L2, <<"\\n">>).
+    combine_two(L1, L2, <<"\n">>).
 
 %%====================================================================
 %% Internal functions
 %%====================================================================
 
 emit_prologue(Type, Name) when is_binary(Type) ->
-    Type1 = <<"# TYPE ", Type/binary, " ", Name/binary>>,
     Help = <<"# HELP ", Name/binary>>,
-    combine_lines(Type1, Help).
+    Type1 = <<"# TYPE ", Type/binary, " ", Name/binary>>,
+    combine_lines(Help, Type1).
 
 emit_series(Name, Value) when is_binary(Name) ->
     emit_series(Name, [], Value).
@@ -120,7 +119,7 @@ emit_summary([{percentile,
     Q3 = emit_series(Name, [{"quantile", "0.95"}], round(P95)),
     Q4 = emit_series(Name, [{"quantile", "0.99"}], round(P99)),
     Q5 = emit_series(Name, [{"quantile", "0.999"}], round(P999)),
-    Percentiles = combine([Q1, Q2, Q3, Q4, Q5], <<"\\n">>),
+    Percentiles = combine([Q1, Q2, Q3, Q4, Q5], <<"\n">>),
     emit_summary(T, Name, combine_lines(Acc, Percentiles));
 emit_summary([_ | T], Name, Acc) ->
    emit_summary(T, Name, Acc);
@@ -157,4 +156,3 @@ v2b(V) when is_float(V) ->
     float_to_binary(V);
 v2b(V) when is_atom(V) ->
     erlang:atom_to_binary(V, utf8).
-
