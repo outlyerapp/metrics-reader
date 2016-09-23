@@ -33,15 +33,19 @@
 -module(prometheus_format).
 -behaviour(metrics_reader_format).
 
--export([histogram/2, combine_lines/2]).
+-include("metrics_reader.hrl").
 
--xref_ignore([histogram/2]).
+-export([histogram/3, combine_lines/2]).
 
--spec histogram(Name :: [binary()], Histogram :: [any()]) -> binary().
-histogram(Name, Histogram) when is_list(Name) ->
-    MetricName = combine(lists:flatten(Name), <<"_">>),
+-xref_ignore([histogram/3]).
+
+-spec histogram(Name :: [binary()], tags(), histogram()) -> binary().
+histogram(Name, Tags, Histogram)
+  when is_list(Name),
+       is_list(Tags) ->
+    MetricName = combine(Name, <<"_">>),
     Prologue = emit_prologue(<<"histogram">>, MetricName),
-    Summary = emit_summary(Histogram, MetricName),
+    Summary = emit_summary(Histogram, Tags, MetricName),
     combine_lines(Prologue, Summary).
 
 -spec combine_lines(L1 :: binary(), L2 :: binary()) -> binary().
@@ -57,8 +61,6 @@ emit_prologue(Type, Name) when is_binary(Type) ->
     Type1 = <<"# TYPE ", Type/binary, " ", Name/binary>>,
     combine_lines(Help, Type1).
 
-emit_series(Name, Value) when is_binary(Name) ->
-    emit_series(Name, [], Value).
 emit_series(Name, Labels, undefined) when is_binary(Name) ->
   LabelPairs = emit_labels(Labels),
   <<Name/binary, LabelPairs/binary, " Nan">>;
@@ -78,52 +80,53 @@ label_pair({Label, Value}) ->
     ValueBin = v2b(Value),
     <<LabelBin/binary, $=, $", ValueBin/binary, $">>.
 
-emit_summary(Histogram, Name) ->
-    emit_summary(Histogram, Name, <<>>).
+emit_summary(Histogram, Tags, Name) ->
+    emit_summary(Histogram, Name, Tags, <<>>).
 
-emit_summary([{min, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_min">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{max, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_max">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{arithmetic_mean, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_arithmetic_mean">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{geometric_mean, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_geometric_mean">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{harmonic_mean, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_harmonic_mean">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{median, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_median">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{variance, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_variance">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{standard_deviation, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_standard_deviation">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{skewness, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_skewness">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
-emit_summary([{kurtosis, V} | T], Name, Acc) ->
-    Series = emit_series(<<Name/binary, "_kurtosis">>, round(V)),
-    emit_summary(T, Name, combine_lines(Acc, Series));
+emit_summary([{min, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_min">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{max, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_max">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{arithmetic_mean, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_arithmetic_mean">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{geometric_mean, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_geometric_mean">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{harmonic_mean, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_harmonic_mean">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{median, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_median">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{variance, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_variance">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{standard_deviation, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_standard_deviation">>,
+                         Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{skewness, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_skewness">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
+emit_summary([{kurtosis, V} | T], Name, Tags, Acc) ->
+    Series = emit_series(<<Name/binary, "_kurtosis">>, Tags, round(V)),
+    emit_summary(T, Name, Tags, combine_lines(Acc, Series));
 emit_summary([{percentile,
                   [{50, P50}, {75, P75}, {95, P95}, {99, P99}, {999, P999}]
-              } | T], Name, Acc) ->
-    Q1 = emit_series(Name, [{"quantile",  "0.5"}], round(P50)),
-    Q2 = emit_series(Name, [{"quantile", "0.75"}], round(P75)),
-    Q3 = emit_series(Name, [{"quantile", "0.95"}], round(P95)),
-    Q4 = emit_series(Name, [{"quantile", "0.99"}], round(P99)),
-    Q5 = emit_series(Name, [{"quantile", "0.999"}], round(P999)),
+              } | T], Name, Tags, Acc) ->
+    Q1 = emit_series(Name, [{"quantile",  "0.5"} | Tags], round(P50)),
+    Q2 = emit_series(Name, [{"quantile", "0.75"} | Tags], round(P75)),
+    Q3 = emit_series(Name, [{"quantile", "0.95"} | Tags], round(P95)),
+    Q4 = emit_series(Name, [{"quantile", "0.99"} | Tags], round(P99)),
+    Q5 = emit_series(Name, [{"quantile", "0.999"} | Tags], round(P999)),
     Percentiles = combine([Q1, Q2, Q3, Q4, Q5], <<"\n">>),
-    emit_summary(T, Name, combine_lines(Acc, Percentiles));
-emit_summary([_ | T], Name, Acc) ->
-   emit_summary(T, Name, Acc);
-emit_summary([], _Name, Acc) ->
+    emit_summary(T, Name, Tags, combine_lines(Acc, Percentiles));
+emit_summary([_ | T], Name, Tags, Acc) ->
+   emit_summary(T, Name, Tags, Acc);
+emit_summary([], _Name, _Tags, Acc) ->
     Acc.
 
 combine(Parts, Sep) ->

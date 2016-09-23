@@ -5,3 +5,8 @@
                                   | {error, {already_started, pid()}}
                                   | {error, any()}.
 
+-type histogram() :: [map()].
+
+-type tag() :: {string(), any()}.
+
+-type tags() :: [tag()].
