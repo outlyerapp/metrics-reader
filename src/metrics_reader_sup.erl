@@ -35,7 +35,7 @@ start_link() ->
 -spec init([term()]) -> {ok, {supervisor:sup_flags(),
                               [supervisor:child_spec()]}}.
 init([]) ->
-    Children = [?CHILD(counter_histogram, worker, []),
+    Children = [?CHILD(metrics_observer, worker, []),
                 ?CHILD(metrics_reader, worker, [])],
     {ok, {sup_flags(), Children}}.
 

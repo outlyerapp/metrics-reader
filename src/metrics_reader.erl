@@ -39,15 +39,15 @@ register(Names) when is_list(Names) ->
 register(Name) ->
     register([Name]).
 
--spec registered() -> list().
-registered() ->
-    gen_server:call(?SERVER, registered).
-
 -spec deregister(list()) -> ok.
 deregister(Names) when is_list(Names) ->
     gen_server:call(?SERVER, {deregister, Names});
 deregister(Name) ->
     deregister([Name]).
+
+-spec registered() -> list().
+registered() ->
+    gen_server:call(?SERVER, registered).
 
 -spec metrics() -> any().
 metrics() ->

@@ -61,9 +61,6 @@ emit_prologue(Type, Name) when is_binary(Type) ->
     Type1 = <<"# TYPE ", Type/binary, " ", Name/binary>>,
     combine_lines(Help, Type1).
 
-emit_series(Name, Labels, undefined) when is_binary(Name) ->
-  LabelPairs = emit_labels(Labels),
-  <<Name/binary, LabelPairs/binary, " Nan">>;
 emit_series(Name, Labels, Value) when is_binary(Name) ->
   LabelPairs = emit_labels(Labels),
   ValueBin = v2b(Value),

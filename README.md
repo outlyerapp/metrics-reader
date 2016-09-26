@@ -35,23 +35,21 @@ Finally, in order to examine the registered metrics:
 
     metrics_reader:metrics().
 
-## The counter histogram
+## The metrics observer server
 
-A stateful wrapper around a Folsom histogram is provided for use by clients.
-This accumulates scalar values over a configured interval, and creates a sample
-resevoir over these accumulated values.  This allows richer statistics to be
-derived for this structure.
-It is possible to extend this histogram beyond counters, to other scalar types.
-Also, it is not necessary to use Folsom as a backend, and future versions may
-allow this as a configuration option.
+For scalar metrics, it is possible to periodically snapshot the values and
+record the resulting values in a histogram.  This allows richer statistics to be
+derived from simple scalar values. Be aware that observing a metric will cause
+the server to clear the metric's current value every time it is sampled.
 
-At a conceptual level, the abstraction is leaky, because normally counters
-provide monotonic guarantees.  This counter may appear to oscillate between
-high and low values as the accumulator clears previous registers.
+In order to observe a metric, it is necessary to provide a name for the
+histogram that will be created:
 
-    counter_histogram:start().
-    counter_histogram:new(subscriber_acks_per_second).
-    counter_histogram:inc(subscriber_acks_per_second).
+    metrics_observer:observe(subscriber_acks, subscriber_acks_per_second).
+
+It is also possible to unobserve a metric:
+
+    metrics_observer:unobserve(subscriber_acks).
 
 ## Configuration
 
