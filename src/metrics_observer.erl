@@ -33,9 +33,9 @@
                 acc_interval :: pos_integer(),
                 timer_ref :: reference()}).
 
--type metric_name() :: binary().
+-type metric_name() :: any().
 
--type histogram_name() :: binary().
+-type histogram_name() :: any().
 
 -type state() :: #state{}.
 
