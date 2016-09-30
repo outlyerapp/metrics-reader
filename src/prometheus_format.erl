@@ -58,7 +58,7 @@ combine_lines(L1, L2) when is_binary(L1), is_binary(L2) ->
 
 emit_prologue(Type, Name) when is_binary(Type) ->
     Help = <<"# HELP ", Name/binary>>,
-    Type1 = <<"# TYPE ", Type/binary, " ", Name/binary>>,
+    Type1 = <<"# TYPE ", Name/binary, " ", Type/binary>>,
     combine_lines(Help, Type1).
 
 emit_series(Name, Labels, Value) when is_binary(Name) ->
