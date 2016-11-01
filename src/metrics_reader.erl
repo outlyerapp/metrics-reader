@@ -56,7 +56,7 @@ metrics() ->
 %% The console passes in an empty args array, even if there are no args.
 -spec console_metrics([]) -> any().
 console_metrics([]) ->
-    Metrics = gen_server:call(?SERVER, console_metrics),
+    Metrics = gen_server:call(?SERVER, metrics),
     io:format("~s~n", [binary_to_list(Metrics)]).
 
 -spec console_metrics() -> any().
@@ -87,11 +87,7 @@ handle_call(registered, _From, State = #state{registry = Registry}) ->
     Reply = sets:to_list(Registry),
     {reply, Reply, State};
 
-handle_call(metrics, _From, State) ->
-    Reply = format_metrics(State),
-    {reply, Reply, State};
-
-handle_call(console_metrics, _From,
+handle_call(metrics, _From,
             State = #state{format_module = FormatMod}) ->
     Lines = format_metrics(State),
     Reply = lists:foldl(fun FormatMod:combine_lines/2, <<>>, Lines),
