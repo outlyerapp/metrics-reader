@@ -5,6 +5,12 @@
 %%
 %% Example output:
 %% <pre>
+%%   # A counter, which has the following representation
+%%   # HELP http_requests_total The total number of HTTP requests.
+%%   # TYPE http_requests_total counter
+%%   http_requests_total{method="post",code="200"} 1027 1395066363000
+%%   http_requests_total{method="post",code="400"}    3 1395066363000
+%%
 %%   # A histogram, which has a complex representation in the text format:
 %%   # HELP http_request_duration_seconds A histogram of the request duration.
 %%   # TYPE http_request_duration_seconds histogram
@@ -35,9 +41,21 @@
 
 -include("metrics_reader.hrl").
 
--export([histogram/3, combine_lines/2]).
+-export([histogram/3, counter/3, combine_lines/2]).
 
 -xref_ignore([histogram/3]).
+
+-spec counter(Name :: [binary()], tags(), counter()) -> binary().
+counter(Name, Tags, {Value, Ts})
+  when is_list(Name),
+       is_integer(Ts), Ts > 0,
+       is_integer(Value) ->
+    MetricName = combine(Name, <<"_">>),
+    Prologue = emit_prologue(<<"counter">>, MetricName),
+    Series = emit_series(MetricName, Tags, Value),
+    TsBin = list_to_binary(integer_to_list(Ts)),
+    Summary = <<Series/binary, " ", TsBin/binary>>,
+    combine_lines(Prologue, Summary).
 
 -spec histogram(Name :: [binary()], tags(), histogram()) -> binary().
 histogram(Name, Tags, Histogram)

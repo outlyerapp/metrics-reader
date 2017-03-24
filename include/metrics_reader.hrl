@@ -6,7 +6,7 @@
                                   | {error, any()}.
 
 -type histogram() :: [map()].
-
 -type tag() :: {string(), any()}.
-
 -type tags() :: [tag()].
+-type timestamp() :: pos_integer().
+-type counter() :: {integer(), timestamp()}.

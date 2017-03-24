@@ -123,35 +123,36 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 
 format_metrics(#state{format_module = FormatMod,
-                      node_tag = NT,
+                      node_tag = NodeTag,
                       registry = Registry}) ->
      [begin
           Spec = folsom_metrics:get_metric_info(Id),
-          format_metric(FormatMod, NT, Spec)
+          format_metric(FormatMod, NodeTag, Spec)
       end || Id <- sets:to_list(Registry)].
 
-format_metric(FormatMod, NT, [{N, [{type, histogram} | _Tags]}]) ->
+format_metric(FormatMod, NodeTag, [{N, [{type, histogram} | _Tags]}]) ->
     Hist = folsom_metrics:get_histogram_statistics(N),
-    FormatMod:histogram(metric_name(N), [NT], Hist).
+    FormatMod:histogram(metric_name(N), [NodeTag], Hist);
+format_metric(FormatMod, NodeTag, [{N, [{type, counter} | _Tags]}]) ->
+    Value = folsom_metrics:get_metric_value(N),
+    Timestamp = get_timestamp(),
+    FormatMod:counter(metric_name(N), [NodeTag], {Value, Timestamp}).
 
+metric_name(L) when is_list(L) ->
+    lists:flatten([metric_name(E) || E <- L]);
+metric_name(T) when is_tuple(T) ->
+    lists:flatten([metric_name(E) || E <- tuple_to_list(T)]);
+metric_name(N1) when is_atom(N1) ->
+    [a2b(N1)];
 metric_name(B) when is_binary(B) ->
     [B];
-metric_name(L) when is_list(L) ->
-    [erlang:list_to_binary(L)];
-metric_name(N1) when
-      is_atom(N1) ->
-    [a2b(N1)];
-metric_name({N1, N2}) when
-      is_atom(N1), is_atom(N2) ->
-    [a2b(N1), a2b(N2)];
-metric_name({N1, N2, N3}) when
-      is_atom(N1), is_atom(N2), is_atom(N3) ->
-    [a2b(N1), a2b(N2), a2b(N3)];
-metric_name({N1, N2, N3, N4}) when
-      is_atom(N1), is_atom(N2), is_atom(N3), is_atom(N4) ->
-    [a2b(N1), a2b(N2), a2b(N3), a2b(N4)];
-metric_name(T) when is_tuple(T) ->
-    lists:flatten([metric_name(E) || E <- tuple_to_list(T)]).
+metric_name(M) ->
+    [list_to_binary(M)].
 
 a2b(A) ->
     erlang:atom_to_binary(A, utf8).
+
+-spec get_timestamp() -> integer().
+get_timestamp() ->
+  {Mega, Sec, Micro} = os:timestamp(),
+  (Mega*1000000 + Sec)*1000 + round(Micro/1000).
